@@ -13,17 +13,18 @@ struct CalculatorButton: View {
     let type: ButtonType
     var widthMultiplier: CGFloat = 1
     var speechEnabled: Bool = true
+    var speakLabel: (() -> String)? = nil
     var action: () -> Void
     
     private let spacing: CGFloat = 8
     
     var body: some View {
         Button(action: {
-            if speechEnabled {
-                speak(label)
-            }
             withAnimation(.spring(response: 0.2, dampingFraction: 0.6)) {
                 action()
+            }
+            if speechEnabled {
+                speak(speakLabel?() ?? speechText)
             }
         }) {
             ZStack {
@@ -59,11 +60,10 @@ struct CalculatorButton: View {
         case .digit(let d):       return d
         case .`operator`(let o):
             switch o {
-            case "/": return "除"
-            case "*": return "乘"
-            case "-": return "减"
-            case "+": return "加"
-            case "=": return "等于"
+            case "/": return "除以"
+            case "*": return "乘以"
+            case "-": return "减去"
+            case "+": return "加上"
             default:  return o
             }
         case .function(let f):
@@ -110,7 +110,7 @@ struct CalculatorButton: View {
     
     private func speak(_ text: String) {
         synthesizer.stopSpeaking(at: .immediate)
-        let utterance = AVSpeechUtterance(string: speechText)
+        let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "zh-CN")
         utterance.rate = 0.5
         synthesizer.speak(utterance)

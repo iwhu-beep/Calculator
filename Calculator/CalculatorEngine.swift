@@ -3,8 +3,8 @@
 @MainActor
 final class CalculatorEngine: ObservableObject {
     @Published var display = "0"
+    @Published var operatorSymbol = ""
     
-    private var currentNumber: Double = 0
     private var previousNumber: Double = 0
     private var operation: Operation? = nil
     private var shouldResetDisplay = false
@@ -13,6 +13,15 @@ final class CalculatorEngine: ObservableObject {
     
     enum Operation {
         case add, subtract, multiply, divide
+        
+        var symbol: String {
+            switch self {
+            case .add:      return "+"
+            case .subtract: return "-"
+            case .multiply: return "\u{00d7}"
+            case .divide:   return "\u{00f7}"
+            }
+        }
     }
     
     enum InputType {
@@ -34,6 +43,7 @@ final class CalculatorEngine: ObservableObject {
                 display += "\(digit)"
             }
         }
+        operatorSymbol = ""
         lastInput = .digit
     }
     
@@ -44,6 +54,7 @@ final class CalculatorEngine: ObservableObject {
             display = "0."
             shouldResetDisplay = false
             hasDecimal = true
+            operatorSymbol = ""
             lastInput = .digit
             return
         }
@@ -51,6 +62,7 @@ final class CalculatorEngine: ObservableObject {
         guard display.count < 12 else { return }
         display += "."
         hasDecimal = true
+        operatorSymbol = ""
         lastInput = .digit
     }
     
@@ -68,6 +80,7 @@ final class CalculatorEngine: ObservableObject {
         }
         
         operation = op
+        operatorSymbol = op.symbol
         shouldResetDisplay = true
         hasDecimal = false
         lastInput = .operation
@@ -83,6 +96,7 @@ final class CalculatorEngine: ObservableObject {
         display = formatResult(result)
         previousNumber = result
         operation = nil
+        operatorSymbol = ""
         shouldResetDisplay = true
         hasDecimal = display.contains(".")
         lastInput = .equals
@@ -92,9 +106,9 @@ final class CalculatorEngine: ObservableObject {
     
     func inputClear() {
         display = "0"
-        currentNumber = 0
         previousNumber = 0
         operation = nil
+        operatorSymbol = ""
         shouldResetDisplay = false
         hasDecimal = false
         lastInput = .clear

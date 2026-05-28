@@ -24,17 +24,26 @@ struct ContentView: View {
     }
     
     private var displayArea: some View {
-        HStack {
-            Spacer()
-            Text(engine.display)
-                .font(.system(size: displayFontSize, weight: .thin, design: .monospaced))
-                .foregroundColor(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.3)
-                .padding(.vertical, 8)
+        VStack(spacing: 4) {
+            HStack {
+                Spacer()
+                Text(engine.operatorSymbol)
+                    .font(.system(size: 32, weight: .light, design: .monospaced))
+                    .foregroundColor(.orange)
+                    .frame(height: 36)
+            }
+            HStack {
+                Spacer()
+                Text(engine.display)
+                    .font(.system(size: displayFontSize, weight: .thin, design: .monospaced))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.3)
+                    .padding(.vertical, 8)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
-        .frame(height: 100)
+        .frame(height: 140)
     }
     
     private var speakerToggle: some View {
@@ -93,7 +102,8 @@ struct ContentView: View {
             HStack(spacing: spacing) {
                 CalculatorButton(type: .digit("0"), widthMultiplier: 2, speechEnabled: speechEnabled) { engine.inputDigit(0) }
                 CalculatorButton(type: .digit("."), speechEnabled: speechEnabled) { engine.inputDecimal() }
-                CalculatorButton(type: .`operator`("="), speechEnabled: speechEnabled) { engine.inputEquals() }
+                CalculatorButton(type: .`operator`("="), speechEnabled: speechEnabled,
+                    speakLabel: { [engine] in engine.display }) { engine.inputEquals() }
             }
         }
         .padding(.horizontal, 12)
