@@ -2,7 +2,7 @@
 
 enum ButtonType {
     case digit(String)
-    case operator(String)
+    case `operator`(String)
     case function(String)
 }
 
