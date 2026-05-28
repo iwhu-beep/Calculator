@@ -18,7 +18,7 @@ final class CalculatorEngine: ObservableObject {
     var historyStore: HistoryStore?
     
     enum Operation {
-        case add, subtract, multiply, divide
+        case add, subtract, multiply, divide, power
         
         var symbol: String {
             switch self {
@@ -26,6 +26,7 @@ final class CalculatorEngine: ObservableObject {
             case .subtract: return "-"
             case .multiply: return "\u{00d7}"
             case .divide:   return "\u{00f7}"
+            case .power:    return "x\u{02b8}"
             }
         }
     }
@@ -33,6 +34,8 @@ final class CalculatorEngine: ObservableObject {
     enum InputType {
         case digit, operation, equals, clear, none
     }
+    
+    // MARK: — Basic
     
     func inputDigit(_ digit: Int) {
         if shouldResetDisplay {
@@ -144,12 +147,91 @@ final class CalculatorEngine: ObservableObject {
         }
     }
     
+    // MARK: — Scientific
+    
+    func inputSin() {
+        guard let value = Double(display) else { return }
+        display = formatResult(sin(value * .pi / 180))
+        hasDecimal = display.contains(".")
+    }
+    
+    func inputCos() {
+        guard let value = Double(display) else { return }
+        display = formatResult(cos(value * .pi / 180))
+        hasDecimal = display.contains(".")
+    }
+    
+    func inputTan() {
+        guard let value = Double(display) else { return }
+        let rad = value * .pi / 180
+        let t = tan(rad)
+        if abs(cos(rad)) < 1e-10 {
+            display = "\u{9519}\u{8bef}"
+            return
+        }
+        display = formatResult(t)
+        hasDecimal = display.contains(".")
+    }
+    
+    func inputLog() {
+        guard let value = Double(display), value > 0 else {
+            display = "\u{9519}\u{8bef}"; return
+        }
+        display = formatResult(log10(value))
+        hasDecimal = display.contains(".")
+    }
+    
+    func inputLn() {
+        guard let value = Double(display), value > 0 else {
+            display = "\u{9519}\u{8bef}"; return
+        }
+        display = formatResult(log(value))
+        hasDecimal = display.contains(".")
+    }
+    
+    func inputSqrt() {
+        guard let value = Double(display), value >= 0 else {
+            display = "\u{9519}\u{8bef}"; return
+        }
+        display = formatResult(sqrt(value))
+        hasDecimal = display.contains(".")
+    }
+    
+    func inputSquare() {
+        guard let value = Double(display) else { return }
+        display = formatResult(value * value)
+        hasDecimal = display.contains(".")
+    }
+    
+    func inputPi() {
+        display = formatResult(.pi)
+        hasDecimal = true
+        shouldResetDisplay = false
+    }
+    
+    func inputE() {
+        display = formatResult(M_E)
+        hasDecimal = true
+        shouldResetDisplay = false
+    }
+    
+    func inputReciprocal() {
+        guard let value = Double(display), value != 0 else {
+            display = "\u{9519}\u{8bef}"; return
+        }
+        display = formatResult(1 / value)
+        hasDecimal = display.contains(".")
+    }
+    
+    // MARK: — Core
+    
     private func calculate(_ a: Double, _ b: Double, _ op: Operation) -> Double {
         switch op {
         case .add:      return a + b
         case .subtract: return a - b
         case .multiply: return a * b
         case .divide:   return b == 0 ? .infinity : a / b
+        case .power:    return pow(a, b)
         }
     }
     
