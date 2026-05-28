@@ -14,12 +14,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: pip3 install Pillow
-
-      - name: Generate App Icons
-        run: python3 scripts/gen_icons.py Calculator/Assets.xcassets/AppIcon.appiconset
-
       - name: Install XcodeGen
         run: brew install xcodegen
 
