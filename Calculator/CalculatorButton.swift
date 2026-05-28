@@ -1,7 +1,16 @@
 ﻿import SwiftUI
 import AVFoundation
 
-private let synthesizer = AVSpeechSynthesizer()
+private let synthesizer: AVSpeechSynthesizer = {
+    let s = AVSpeechSynthesizer()
+    return s
+}()
+
+private let chineseVoice: AVSpeechSynthesisVoice? = {
+    AVSpeechSynthesisVoice.speechVoices().first {
+        $0.language == "zh-CN" && ($0.quality == .enhanced || $0.quality == .premium)
+    } ?? AVSpeechSynthesisVoice(language: "zh-CN")
+}()
 
 enum ButtonType {
     case digit(String)
@@ -59,17 +68,17 @@ struct CalculatorButton: View {
         case .digit(let d):       return d
         case .`operator`(let o):
             switch o {
-            case "/": return "除以"
-            case "*": return "乘以"
-            case "-": return "减去"
-            case "+": return "加上"
+            case "\u{00f7}": return "\u{9664}\u{4ee5}"
+            case "\u{00d7}": return "\u{4e58}\u{4ee5}"
+            case "-": return "\u{51cf}\u{53bb}"
+            case "+": return "\u{52a0}\u{4e0a}"
             default:  return o
             }
         case .function(let f):
             switch f {
-            case "AC":  return "清除"
-            case "+/-": return "正负号"
-            case "%":   return "百分比"
+            case "AC":  return "\u{6e05}\u{9664}"
+            case "+/-": return "\u{6b63}\u{8d1f}\u{53f7}"
+            case "%":   return "\u{767e}\u{5206}\u{6bd4}"
             default:    return f
             }
         }
@@ -77,9 +86,9 @@ struct CalculatorButton: View {
     
     private var backgroundColor: Color {
         switch type {
-        case .digit:       return Color(white: 0.18)
-        case .`operator`:  return Color(red: 1.0, green: 0.58, blue: 0.0)
-        case .function:    return Color(white: 0.12)
+        case .digit:       return Color(red: 0.12, green: 0.22, blue: 0.50)
+        case .`operator`:  return Color(red: 0.25, green: 0.60, blue: 0.95)
+        case .function:    return Color(red: 0.50, green: 0.78, blue: 0.95)
         }
     }
     
@@ -87,7 +96,7 @@ struct CalculatorButton: View {
         switch type {
         case .digit:       return .white
         case .`operator`:  return .white
-        case .function:    return Color(red: 1.0, green: 0.58, blue: 0.0)
+        case .function:    return Color(red: 0.04, green: 0.08, blue: 0.22)
         }
     }
     
@@ -110,8 +119,9 @@ struct CalculatorButton: View {
     private func speak(_ text: String) {
         synthesizer.stopSpeaking(at: .immediate)
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "zh-CN")
-        utterance.rate = 0.5
+        utterance.voice = chineseVoice
+        utterance.rate = 0.48
+        utterance.pitchMultiplier = 1.08
         synthesizer.speak(utterance)
     }
 }

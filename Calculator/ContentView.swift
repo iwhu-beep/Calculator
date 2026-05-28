@@ -6,7 +6,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            Color(red: 0.06, green: 0.06, blue: 0.09).ignoresSafeArea()
+            Color(red: 0.04, green: 0.08, blue: 0.22).ignoresSafeArea()
             
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
@@ -29,7 +29,7 @@ struct ContentView: View {
                 Spacer()
                 Text(engine.operatorSymbol)
                     .font(.system(size: 28, weight: .light, design: .monospaced))
-                    .foregroundColor(Color(red: 1.0, green: 0.58, blue: 0.0))
+                    .foregroundColor(Color(red: 0.50, green: 0.78, blue: 0.95))
                     .frame(height: 30)
             }
             HStack {
@@ -54,7 +54,7 @@ struct ContentView: View {
                 Image(systemName: speechEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
                     .font(.system(size: 16))
                     .foregroundColor(speechEnabled
-                        ? Color(red: 1.0, green: 0.58, blue: 0.0)
+                        ? Color(red: 0.50, green: 0.78, blue: 0.95)
                         : Color(white: 0.25))
                     .frame(width: 32, height: 32)
             }
