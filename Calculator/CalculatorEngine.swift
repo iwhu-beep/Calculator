@@ -150,77 +150,91 @@ final class CalculatorEngine: ObservableObject {
     // MARK: — Scientific
     
     func inputSin() {
-        guard let value = Double(display) else { return }
+        guard let value = Double(display), display != "\u{9519}\u{8bef}" else { return }
+        let input = display
         display = formatResult(sin(value * .pi / 180))
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "sin(\(input))", result: display) }
     }
     
     func inputCos() {
-        guard let value = Double(display) else { return }
+        guard let value = Double(display), display != "\u{9519}\u{8bef}" else { return }
+        let input = display
         display = formatResult(cos(value * .pi / 180))
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "cos(\(input))", result: display) }
     }
     
     func inputTan() {
-        guard let value = Double(display) else { return }
+        guard let value = Double(display), display != "\u{9519}\u{8bef}" else { return }
+        let input = display
         let rad = value * .pi / 180
-        let t = tan(rad)
-        if abs(cos(rad)) < 1e-10 {
-            display = "\u{9519}\u{8bef}"
-            return
-        }
-        display = formatResult(t)
+        if abs(cos(rad)) < 1e-10 { display = "\u{9519}\u{8bef}"; return }
+        display = formatResult(tan(rad))
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "tan(\(input))", result: display) }
     }
     
     func inputLog() {
-        guard let value = Double(display), value > 0 else {
+        guard let value = Double(display), value > 0, display != "\u{9519}\u{8bef}" else {
             display = "\u{9519}\u{8bef}"; return
         }
+        let input = display
         display = formatResult(log10(value))
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "log(\(input))", result: display) }
     }
     
     func inputLn() {
-        guard let value = Double(display), value > 0 else {
+        guard let value = Double(display), value > 0, display != "\u{9519}\u{8bef}" else {
             display = "\u{9519}\u{8bef}"; return
         }
+        let input = display
         display = formatResult(log(value))
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "ln(\(input))", result: display) }
     }
     
     func inputSqrt() {
-        guard let value = Double(display), value >= 0 else {
+        guard let value = Double(display), value >= 0, display != "\u{9519}\u{8bef}" else {
             display = "\u{9519}\u{8bef}"; return
         }
+        let input = display
         display = formatResult(sqrt(value))
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "\u{221a}(\(input))", result: display) }
     }
     
     func inputSquare() {
-        guard let value = Double(display) else { return }
+        guard let value = Double(display), display != "\u{9519}\u{8bef}" else { return }
+        let input = display
         display = formatResult(value * value)
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "(\(input))\u{00b2}", result: display) }
     }
     
     func inputPi() {
         display = formatResult(.pi)
         hasDecimal = true
         shouldResetDisplay = false
+        historyStore?.add(expression: "\u{03c0}", result: display)
     }
     
     func inputE() {
         display = formatResult(M_E)
         hasDecimal = true
         shouldResetDisplay = false
+        historyStore?.add(expression: "e", result: display)
     }
     
     func inputReciprocal() {
-        guard let value = Double(display), value != 0 else {
+        guard let value = Double(display), value != 0, display != "\u{9519}\u{8bef}" else {
             display = "\u{9519}\u{8bef}"; return
         }
+        let input = display
         display = formatResult(1 / value)
         hasDecimal = display.contains(".")
+        if display != "\u{9519}\u{8bef}" { historyStore?.add(expression: "1/(\(input))", result: display) }
     }
     
     // MARK: — Core

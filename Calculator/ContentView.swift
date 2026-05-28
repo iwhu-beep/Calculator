@@ -41,7 +41,6 @@ struct ContentView: View {
     private var displayArea: some View {
         VStack(spacing: 2) {
             HStack {
-                sciToggle
                 Spacer()
                 Text(engine.operatorSymbol)
                     .font(.system(size: 28, weight: .light, design: .monospaced))
@@ -61,22 +60,6 @@ struct ContentView: View {
         .frame(height: 100)
     }
     
-    private var sciToggle: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.25)) { isScientific.toggle() }
-        } label: {
-            Text("\u{79d1}\u{5b66}")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(isScientific ? bgColor : accentColor)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 6)
-                .background(isScientific ? accentColor : Color.clear)
-                .clipShape(Capsule())
-                .overlay(Capsule().stroke(accentColor, lineWidth: 1))
-        }
-        .buttonStyle(.plain)
-    }
-    
     // MARK: — Toolbar
     
     private var toolbarRow: some View {
@@ -84,7 +67,9 @@ struct ContentView: View {
             toolBtn("clock.arrow.circlepath", "\u{5386}\u{53f2}") { showHistory = true }
             toolBtn(speechEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill",
                     "\u{8bed}\u{97f3}", active: speechEnabled) { speechEnabled.toggle() }
-            toolBtn("plus.forwardslash.minus", "\u{6b63}\u{8d1f}") { engine.inputToggleSign() }
+            toolBtn("function", "\u{79d1}\u{5b66}", active: isScientific) {
+                withAnimation(.easeInOut(duration: 0.25)) { isScientific.toggle() }
+            }
             toolBtn("gearshape.fill", "\u{8bbe}\u{7f6e}") { showSettings = true }
         }
     }
