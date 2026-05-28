@@ -104,7 +104,13 @@ struct CalculatorButton: View {
         }
     }
     
+    private var isClear: Bool {
+        if case .function(let f) = type, f == "AC" { return true }
+        return false
+    }
+    
     private var backgroundColor: Color {
+        if isClear { return Color(red: 0.9, green: 0.2, blue: 0.2) }
         switch type {
         case .digit:       return Color(red: 0.12, green: 0.22, blue: 0.50)
         case .`operator`:  return Color(red: 0.25, green: 0.60, blue: 0.95)
@@ -113,6 +119,7 @@ struct CalculatorButton: View {
     }
     
     private var foregroundColor: Color {
+        if isClear { return .white }
         switch type {
         case .digit:       return .white
         case .`operator`:  return .white

@@ -17,9 +17,9 @@ struct ContentView: View {
                 displayArea
                     .padding(.horizontal, 28)
                 
-                toolbar
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 12)
+                toolbarRow
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 16)
                 
                 keypad
             }
@@ -35,7 +35,7 @@ struct ContentView: View {
                 Spacer()
                 Text(engine.operatorSymbol)
                     .font(.system(size: 28, weight: .light, design: .monospaced))
-                    .foregroundColor(Color(red: 0.50, green: 0.78, blue: 0.95))
+                    .foregroundColor(accentColor)
                     .frame(height: 30)
             }
             HStack {
@@ -51,41 +51,31 @@ struct ContentView: View {
         .frame(height: 100)
     }
     
-    private var toolbar: some View {
-        HStack(spacing: 16) {
-            Spacer()
-            Button {
-                showHistory = true
-            } label: {
-                Image(systemName: "clock.arrow.circlepath")
-                    .font(.system(size: 16))
-                    .foregroundColor(Color(white: 0.35))
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            
-            Button {
-                speechEnabled.toggle()
-            } label: {
-                Image(systemName: speechEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                    .font(.system(size: 16))
-                    .foregroundColor(speechEnabled
-                        ? Color(red: 0.50, green: 0.78, blue: 0.95)
-                        : Color(white: 0.25))
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            
-            Button {
-                showSettings = true
-            } label: {
-                Image(systemName: "gearshape.fill")
-                    .font(.system(size: 16))
-                    .foregroundColor(Color(white: 0.35))
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
+    private var toolbarRow: some View {
+        HStack(spacing: 10) {
+            toolbarButton(icon: "clock.arrow.circlepath", label: "\u{5386}\u{53f2}") { showHistory = true }
+            toolbarButton(icon: speechEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill",
+                          label: "\u{8bed}\u{97f3}", active: speechEnabled) { speechEnabled.toggle() }
+            toolbarButton(icon: "delete.left.fill", label: "\u{9000}\u{4f4d}") { engine.inputDelete() }
+            toolbarButton(icon: "gearshape.fill", label: "\u{8bbe}\u{7f6e}") { showSettings = true }
         }
+    }
+    
+    private func toolbarButton(icon: String, label: String, active: Bool = false, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 16))
+                Text(label)
+                    .font(.system(size: 10, weight: .medium))
+            }
+            .foregroundColor(active ? accentColor : Color(white: 0.7))
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
+            .background(Color(red: 0.08, green: 0.14, blue: 0.32))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
     }
     
     private var displayFontSize: CGFloat {
@@ -140,4 +130,5 @@ struct ContentView: View {
     }
     
     private var spacing: CGFloat { 10 }
+    private var accentColor: Color { Color(red: 0.50, green: 0.78, blue: 0.95) }
 }
