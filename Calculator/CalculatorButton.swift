@@ -16,7 +16,7 @@ struct CalculatorButton: View {
     var speakLabel: (() -> String)? = nil
     var action: () -> Void
     
-    private let spacing: CGFloat = 8
+    private let spacing: CGFloat = 10
     
     var body: some View {
         Button(action: {
@@ -39,7 +39,6 @@ struct CalculatorButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
-        .accessibilityAddTraits(.isButton)
     }
     
     private var baseSize: CGFloat {
@@ -78,9 +77,9 @@ struct CalculatorButton: View {
     
     private var backgroundColor: Color {
         switch type {
-        case .digit:       return Color(white: 0.2)
-        case .`operator`:  return .orange
-        case .function:    return Color(white: 0.6)
+        case .digit:       return Color(white: 0.18)
+        case .`operator`:  return Color(red: 1.0, green: 0.58, blue: 0.0)
+        case .function:    return Color(white: 0.12)
         }
     }
     
@@ -88,15 +87,15 @@ struct CalculatorButton: View {
         switch type {
         case .digit:       return .white
         case .`operator`:  return .white
-        case .function:    return .black
+        case .function:    return Color(red: 1.0, green: 0.58, blue: 0.0)
         }
     }
     
     private var fontSize: CGFloat {
         switch type {
-        case .digit:       return 34
-        case .`operator`:  return 38
-        case .function:    return 28
+        case .digit:       return 36
+        case .`operator`:  return 40
+        case .function:    return 30
         }
     }
     
@@ -104,7 +103,7 @@ struct CalculatorButton: View {
         switch type {
         case .digit:       return .medium
         case .`operator`:  return .bold
-        case .function:    return .medium
+        case .function:    return .semibold
         }
     }
     
