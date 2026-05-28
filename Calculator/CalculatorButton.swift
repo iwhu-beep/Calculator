@@ -34,54 +34,48 @@ struct CalculatorButton: View {
         .accessibilityAddTraits(.isButton)
     }
     
-    // MARK: — Layout
-    
     private var baseSize: CGFloat {
         let screenWidth = UIScreen.main.bounds.width
         return (screenWidth - spacing * 5) / 4
     }
     
-    // MARK: — Label
-    
     private var label: String {
         switch type {
-        case .digit(let d):     return d
-        case .operator(let o):  return o
-        case .function(let f):  return f
+        case .digit(let d):       return d
+        case .`operator`(let o):  return o
+        case .function(let f):    return f
         }
     }
     
-    // MARK: — Styling
-    
     private var backgroundColor: Color {
         switch type {
-        case .digit:      return Color(white: 0.2)
-        case .operator:   return .orange
-        case .function:   return Color(white: 0.6)
+        case .digit:       return Color(white: 0.2)
+        case .`operator`:  return .orange
+        case .function:    return Color(white: 0.6)
         }
     }
     
     private var foregroundColor: Color {
         switch type {
-        case .digit:      return .white
-        case .operator:   return .white
-        case .function:   return .black
+        case .digit:       return .white
+        case .`operator`:  return .white
+        case .function:    return .black
         }
     }
     
     private var fontSize: CGFloat {
         switch type {
-        case .digit:      return 34
-        case .operator:   return 38
-        case .function:   return 28
+        case .digit:       return 34
+        case .`operator`:  return 38
+        case .function:    return 28
         }
     }
     
     private var fontWeight: Font.Weight {
         switch type {
-        case .digit:      return .medium
-        case .operator:   return .bold
-        case .function:   return .medium
+        case .digit:       return .medium
+        case .`operator`:  return .bold
+        case .function:    return .medium
         }
     }
 }

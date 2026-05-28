@@ -10,18 +10,14 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
                 
-                // Display
                 displayArea
                     .padding(.horizontal, 24)
                     .padding(.bottom, 16)
                 
-                // Keypad
                 keypad
             }
         }
     }
-    
-    // MARK: — Display
     
     private var displayArea: some View {
         HStack {
@@ -45,47 +41,40 @@ struct ContentView: View {
         return 34
     }
     
-    // MARK: — Keypad
-    
     private var keypad: some View {
         VStack(spacing: spacing) {
-            // Row 1: AC, +-, %, /
             HStack(spacing: spacing) {
-                CalculatorButton(type: .function("AC")) { engine.inputClear() }
-                CalculatorButton(type: .function("+-"))  { engine.inputToggleSign() }
-                CalculatorButton(type: .function("%"))  { engine.inputPercentage() }
-                CalculatorButton(type: .operator("/"))  { engine.inputOperation(.divide) }
+                CalculatorButton(type: .function("AC"))   { engine.inputClear() }
+                CalculatorButton(type: .function("+/-"))  { engine.inputToggleSign() }
+                CalculatorButton(type: .function("%"))    { engine.inputPercentage() }
+                CalculatorButton(type: .`operator`("/"))  { engine.inputOperation(.divide) }
             }
             
-            // Row 2: 7, 8, 9, x
             HStack(spacing: spacing) {
-                CalculatorButton(type: .digit("7"))  { engine.inputDigit(7) }
-                CalculatorButton(type: .digit("8"))  { engine.inputDigit(8) }
-                CalculatorButton(type: .digit("9"))  { engine.inputDigit(9) }
-                CalculatorButton(type: .operator("x")) { engine.inputOperation(.multiply) }
+                CalculatorButton(type: .digit("7"))      { engine.inputDigit(7) }
+                CalculatorButton(type: .digit("8"))      { engine.inputDigit(8) }
+                CalculatorButton(type: .digit("9"))      { engine.inputDigit(9) }
+                CalculatorButton(type: .`operator`("*")) { engine.inputOperation(.multiply) }
             }
             
-            // Row 3: 4, 5, 6, -
             HStack(spacing: spacing) {
-                CalculatorButton(type: .digit("4"))  { engine.inputDigit(4) }
-                CalculatorButton(type: .digit("5"))  { engine.inputDigit(5) }
-                CalculatorButton(type: .digit("6"))  { engine.inputDigit(6) }
-                CalculatorButton(type: .operator("-")) { engine.inputOperation(.subtract) }
+                CalculatorButton(type: .digit("4"))      { engine.inputDigit(4) }
+                CalculatorButton(type: .digit("5"))      { engine.inputDigit(5) }
+                CalculatorButton(type: .digit("6"))      { engine.inputDigit(6) }
+                CalculatorButton(type: .`operator`("-")) { engine.inputOperation(.subtract) }
             }
             
-            // Row 4: 1, 2, 3, +
             HStack(spacing: spacing) {
-                CalculatorButton(type: .digit("1"))  { engine.inputDigit(1) }
-                CalculatorButton(type: .digit("2"))  { engine.inputDigit(2) }
-                CalculatorButton(type: .digit("3"))  { engine.inputDigit(3) }
-                CalculatorButton(type: .operator("+")) { engine.inputOperation(.add) }
+                CalculatorButton(type: .digit("1"))      { engine.inputDigit(1) }
+                CalculatorButton(type: .digit("2"))      { engine.inputDigit(2) }
+                CalculatorButton(type: .digit("3"))      { engine.inputDigit(3) }
+                CalculatorButton(type: .`operator`("+")) { engine.inputOperation(.add) }
             }
             
-            // Row 5: 0, ., =
             HStack(spacing: spacing) {
                 CalculatorButton(type: .digit("0"), widthMultiplier: 2) { engine.inputDigit(0) }
                 CalculatorButton(type: .digit(".")) { engine.inputDecimal() }
-                CalculatorButton(type: .operator("=")) { engine.inputEquals() }
+                CalculatorButton(type: .`operator`("=")) { engine.inputEquals() }
             }
         }
         .padding(.horizontal, 12)
