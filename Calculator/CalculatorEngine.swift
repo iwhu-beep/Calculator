@@ -13,6 +13,9 @@ final class CalculatorEngine: ObservableObject {
     private var shouldResetDisplay = false
     private var hasDecimal = false
     private var lastInput: InputType = .none
+    private var pendingExpression = ""
+    
+    var historyStore: HistoryStore?
     
     enum Operation {
         case add, subtract, multiply, divide
@@ -78,6 +81,7 @@ final class CalculatorEngine: ObservableObject {
         
         operation = op
         operatorSymbol = op.symbol
+        pendingExpression = "\(formatResult(previousNumber)) \(op.symbol)"
         shouldResetDisplay = true
         hasDecimal = false
         lastInput = .operation
@@ -87,11 +91,18 @@ final class CalculatorEngine: ObservableObject {
         guard let op = operation else { return }
         
         let value = Double(display) ?? 0
+        let expression = "\(pendingExpression) \(display) ="
         let result = calculate(previousNumber, value, op)
         display = formatResult(result)
+        
+        if display != "\u{9519}\u{8bef}" {
+            historyStore?.add(expression: expression, result: display)
+        }
+        
         previousNumber = result
         operation = nil
         operatorSymbol = ""
+        pendingExpression = ""
         shouldResetDisplay = true
         hasDecimal = display.contains(".")
         lastInput = .equals
@@ -102,6 +113,7 @@ final class CalculatorEngine: ObservableObject {
         previousNumber = 0
         operation = nil
         operatorSymbol = ""
+        pendingExpression = ""
         shouldResetDisplay = false
         hasDecimal = false
         lastInput = .clear

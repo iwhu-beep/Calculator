@@ -2,8 +2,10 @@
 
 struct ContentView: View {
     @StateObject private var engine = CalculatorEngine()
+    @StateObject private var historyStore = HistoryStore()
     @AppStorage("speechEnabled") private var speechEnabled = true
     @State private var showSettings = false
+    @State private var showHistory = false
     
     var body: some View {
         ZStack {
@@ -22,9 +24,9 @@ struct ContentView: View {
                 keypad
             }
         }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
-        }
+        .sheet(isPresented: $showSettings) { SettingsView() }
+        .sheet(isPresented: $showHistory) { HistoryView(store: historyStore) }
+        .onAppear { engine.historyStore = historyStore }
     }
     
     private var displayArea: some View {
@@ -52,6 +54,16 @@ struct ContentView: View {
     private var toolbar: some View {
         HStack(spacing: 16) {
             Spacer()
+            Button {
+                showHistory = true
+            } label: {
+                Image(systemName: "clock.arrow.circlepath")
+                    .font(.system(size: 16))
+                    .foregroundColor(Color(white: 0.35))
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+            
             Button {
                 speechEnabled.toggle()
             } label: {
