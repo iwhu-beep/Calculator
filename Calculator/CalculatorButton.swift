@@ -1,16 +1,30 @@
 ﻿import SwiftUI
 import AVFoundation
+import UIKit
 
 private let synthesizer: AVSpeechSynthesizer = {
     let s = AVSpeechSynthesizer()
     return s
 }()
 
-private let chineseVoice: AVSpeechSynthesisVoice? = {
-    AVSpeechSynthesisVoice.speechVoices().first {
-        $0.language == "zh-CN" && ($0.quality == .enhanced || $0.quality == .premium)
-    } ?? AVSpeechSynthesisVoice(language: "zh-CN")
-}()
+private var voiceCache: String = ""
+private var cachedVoice: AVSpeechSynthesisVoice?
+
+private func resolveVoice() -> AVSpeechSynthesisVoice {
+    let identifier = UserDefaults.standard.string(forKey: "voiceIdentifier") ?? ""
+    if identifier == voiceCache, let v = cachedVoice { return v }
+    let all = AVSpeechSynthesisVoice.speechVoices()
+    if !identifier.isEmpty, let match = all.first(where: { $0.identifier == identifier }) {
+        cachedVoice = match
+        voiceCache = identifier
+        return match
+    }
+    let enhanced = all.first { $0.language == "zh-CN" && ($0.quality == .enhanced || $0.quality == .premium) }
+        ?? AVSpeechSynthesisVoice(language: "zh-CN")
+    cachedVoice = enhanced
+    voiceCache = "default"
+    return enhanced ?? AVSpeechSynthesisVoice(language: "zh-CN")!
+}
 
 enum ButtonType {
     case digit(String)
@@ -25,10 +39,16 @@ struct CalculatorButton: View {
     var speakLabel: (() -> String)? = nil
     var action: () -> Void
     
+    @AppStorage("buttonSize") private var buttonSize = 1.0
+    @AppStorage("hapticEnabled") private var hapticEnabled = true
+    
     private let spacing: CGFloat = 10
     
     var body: some View {
         Button(action: {
+            if hapticEnabled {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            }
             withAnimation(.spring(response: 0.2, dampingFraction: 0.6)) {
                 action()
             }
@@ -41,7 +61,7 @@ struct CalculatorButton: View {
                     .fill(backgroundColor)
                 
                 Text(label)
-                    .font(.system(size: fontSize, weight: fontWeight, design: .rounded))
+                    .font(.system(size: fontSize * buttonSize, weight: fontWeight, design: .rounded))
                     .foregroundColor(foregroundColor)
             }
             .frame(width: baseSize * widthMultiplier + (widthMultiplier - 1) * spacing, height: baseSize)
@@ -119,7 +139,7 @@ struct CalculatorButton: View {
     private func speak(_ text: String) {
         synthesizer.stopSpeaking(at: .immediate)
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = chineseVoice
+        utterance.voice = resolveVoice()
         utterance.rate = 0.48
         utterance.pitchMultiplier = 1.08
         synthesizer.speak(utterance)

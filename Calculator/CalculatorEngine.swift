@@ -1,9 +1,12 @@
 ﻿import Foundation
+import SwiftUI
 
 @MainActor
 final class CalculatorEngine: ObservableObject {
     @Published var display = "0"
     @Published var operatorSymbol = ""
+    
+    @AppStorage("decimalPlaces") private var decimalPlaces = 8
     
     private var previousNumber: Double = 0
     private var operation: Operation? = nil
@@ -28,8 +31,6 @@ final class CalculatorEngine: ObservableObject {
         case digit, operation, equals, clear, none
     }
     
-    // MARK: — Digit Input
-    
     func inputDigit(_ digit: Int) {
         if shouldResetDisplay {
             display = "\(digit)"
@@ -47,8 +48,6 @@ final class CalculatorEngine: ObservableObject {
         lastInput = .digit
     }
     
-    // MARK: — Decimal
-    
     func inputDecimal() {
         if shouldResetDisplay {
             display = "0."
@@ -65,8 +64,6 @@ final class CalculatorEngine: ObservableObject {
         operatorSymbol = ""
         lastInput = .digit
     }
-    
-    // MARK: — Operations
     
     func inputOperation(_ op: Operation) {
         let value = Double(display) ?? 0
@@ -86,8 +83,6 @@ final class CalculatorEngine: ObservableObject {
         lastInput = .operation
     }
     
-    // MARK: — Equals
-    
     func inputEquals() {
         guard let op = operation else { return }
         
@@ -102,8 +97,6 @@ final class CalculatorEngine: ObservableObject {
         lastInput = .equals
     }
     
-    // MARK: — Clear
-    
     func inputClear() {
         display = "0"
         previousNumber = 0
@@ -114,8 +107,6 @@ final class CalculatorEngine: ObservableObject {
         lastInput = .clear
     }
     
-    // MARK: — Toggle Sign
-    
     func inputToggleSign() {
         guard let value = Double(display), value != 0 else { return }
         let negated = -value
@@ -123,16 +114,12 @@ final class CalculatorEngine: ObservableObject {
         hasDecimal = display.contains(".")
     }
     
-    // MARK: — Percentage
-    
     func inputPercentage() {
         guard let value = Double(display) else { return }
         let percent = value / 100
         display = formatResult(percent)
         hasDecimal = display.contains(".")
     }
-    
-    // MARK: — Delete
     
     func inputDelete() {
         guard !shouldResetDisplay else { return }
@@ -145,8 +132,6 @@ final class CalculatorEngine: ObservableObject {
         }
     }
     
-    // MARK: — Calculation
-    
     private func calculate(_ a: Double, _ b: Double, _ op: Operation) -> Double {
         switch op {
         case .add:      return a + b
@@ -157,8 +142,8 @@ final class CalculatorEngine: ObservableObject {
     }
     
     private func formatResult(_ value: Double) -> String {
-        if value.isInfinite { return "错误" }
-        if value.isNaN { return "错误" }
+        if value.isInfinite { return "\u{9519}\u{8bef}" }
+        if value.isNaN { return "\u{9519}\u{8bef}" }
         
         let integerPart = Int(value)
         if Double(integerPart) == value {
@@ -167,7 +152,7 @@ final class CalculatorEngine: ObservableObject {
         
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 8
+        formatter.maximumFractionDigits = decimalPlaces
         formatter.numberStyle = .decimal
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }

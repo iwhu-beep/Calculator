@@ -3,6 +3,7 @@
 struct ContentView: View {
     @StateObject private var engine = CalculatorEngine()
     @AppStorage("speechEnabled") private var speechEnabled = true
+    @State private var showSettings = false
     
     var body: some View {
         ZStack {
@@ -14,12 +15,15 @@ struct ContentView: View {
                 displayArea
                     .padding(.horizontal, 28)
                 
-                speakerToggle
+                toolbar
                     .padding(.horizontal, 28)
                     .padding(.bottom, 12)
                 
                 keypad
             }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
     }
     
@@ -45,8 +49,8 @@ struct ContentView: View {
         .frame(height: 100)
     }
     
-    private var speakerToggle: some View {
-        HStack {
+    private var toolbar: some View {
+        HStack(spacing: 16) {
             Spacer()
             Button {
                 speechEnabled.toggle()
@@ -56,6 +60,16 @@ struct ContentView: View {
                     .foregroundColor(speechEnabled
                         ? Color(red: 0.50, green: 0.78, blue: 0.95)
                         : Color(white: 0.25))
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+            
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape.fill")
+                    .font(.system(size: 16))
+                    .foregroundColor(Color(white: 0.35))
                     .frame(width: 32, height: 32)
             }
             .buttonStyle(.plain)
