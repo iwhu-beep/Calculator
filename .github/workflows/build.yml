@@ -14,14 +14,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+      - name: Show Available Xcode Versions
+        run: ls /Applications/Xcode*.app
 
       - name: Install XcodeGen
         run: brew install xcodegen
 
       - name: Generate Xcode Project
-        run: xcodegen generate
+        run: |
+          xcodegen generate --spec project.yml
+          echo "--- Schemes ---"
+          xcodebuild -project Calculator.xcodeproj -list
 
       - name: Build for Device
         run: |
@@ -35,9 +38,10 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            ONLY_ACTIVE_ARCH=NO
+            ONLY_ACTIVE_ARCH=NO 2>&1
 
       - name: Create IPA
+        if: success()
         run: |
           APP_PATH=$(find DerivedData/Build/Products/Release-iphoneos -name "*.app" | head -1)
           echo "Found app at: $APP_PATH"
@@ -47,6 +51,7 @@ jobs:
           rm -rf Payload
 
       - name: Upload IPA
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: Calculator.ipa
