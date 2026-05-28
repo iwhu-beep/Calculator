@@ -2,6 +2,7 @@
 
 struct ContentView: View {
     @StateObject private var engine = CalculatorEngine()
+    @AppStorage("speechEnabled") private var speechEnabled = true
     
     var body: some View {
         ZStack {
@@ -12,7 +13,10 @@ struct ContentView: View {
                 
                 displayArea
                     .padding(.horizontal, 24)
-                    .padding(.bottom, 16)
+                
+                speakerToggle
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 8)
                 
                 keypad
             }
@@ -30,7 +34,22 @@ struct ContentView: View {
                 .padding(.vertical, 8)
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
-        .frame(height: 120)
+        .frame(height: 100)
+    }
+    
+    private var speakerToggle: some View {
+        HStack {
+            Spacer()
+            Button {
+                speechEnabled.toggle()
+            } label: {
+                Image(systemName: speechEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                    .font(.system(size: 18))
+                    .foregroundColor(speechEnabled ? .orange : Color(white: 0.4))
+                    .frame(width: 36, height: 36)
+            }
+            .buttonStyle(.plain)
+        }
     }
     
     private var displayFontSize: CGFloat {
@@ -44,37 +63,37 @@ struct ContentView: View {
     private var keypad: some View {
         VStack(spacing: spacing) {
             HStack(spacing: spacing) {
-                CalculatorButton(type: .function("AC"))   { engine.inputClear() }
-                CalculatorButton(type: .function("+/-"))  { engine.inputToggleSign() }
-                CalculatorButton(type: .function("%"))    { engine.inputPercentage() }
-                CalculatorButton(type: .`operator`("/"))  { engine.inputOperation(.divide) }
+                CalculatorButton(type: .function("AC"), speechEnabled: speechEnabled)   { engine.inputClear() }
+                CalculatorButton(type: .function("+/-"), speechEnabled: speechEnabled)  { engine.inputToggleSign() }
+                CalculatorButton(type: .function("%"), speechEnabled: speechEnabled)    { engine.inputPercentage() }
+                CalculatorButton(type: .`operator`("/"), speechEnabled: speechEnabled)  { engine.inputOperation(.divide) }
             }
             
             HStack(spacing: spacing) {
-                CalculatorButton(type: .digit("7"))      { engine.inputDigit(7) }
-                CalculatorButton(type: .digit("8"))      { engine.inputDigit(8) }
-                CalculatorButton(type: .digit("9"))      { engine.inputDigit(9) }
-                CalculatorButton(type: .`operator`("*")) { engine.inputOperation(.multiply) }
+                CalculatorButton(type: .digit("7"), speechEnabled: speechEnabled)      { engine.inputDigit(7) }
+                CalculatorButton(type: .digit("8"), speechEnabled: speechEnabled)      { engine.inputDigit(8) }
+                CalculatorButton(type: .digit("9"), speechEnabled: speechEnabled)      { engine.inputDigit(9) }
+                CalculatorButton(type: .`operator`("*"), speechEnabled: speechEnabled) { engine.inputOperation(.multiply) }
             }
             
             HStack(spacing: spacing) {
-                CalculatorButton(type: .digit("4"))      { engine.inputDigit(4) }
-                CalculatorButton(type: .digit("5"))      { engine.inputDigit(5) }
-                CalculatorButton(type: .digit("6"))      { engine.inputDigit(6) }
-                CalculatorButton(type: .`operator`("-")) { engine.inputOperation(.subtract) }
+                CalculatorButton(type: .digit("4"), speechEnabled: speechEnabled)      { engine.inputDigit(4) }
+                CalculatorButton(type: .digit("5"), speechEnabled: speechEnabled)      { engine.inputDigit(5) }
+                CalculatorButton(type: .digit("6"), speechEnabled: speechEnabled)      { engine.inputDigit(6) }
+                CalculatorButton(type: .`operator`("-"), speechEnabled: speechEnabled) { engine.inputOperation(.subtract) }
             }
             
             HStack(spacing: spacing) {
-                CalculatorButton(type: .digit("1"))      { engine.inputDigit(1) }
-                CalculatorButton(type: .digit("2"))      { engine.inputDigit(2) }
-                CalculatorButton(type: .digit("3"))      { engine.inputDigit(3) }
-                CalculatorButton(type: .`operator`("+")) { engine.inputOperation(.add) }
+                CalculatorButton(type: .digit("1"), speechEnabled: speechEnabled)      { engine.inputDigit(1) }
+                CalculatorButton(type: .digit("2"), speechEnabled: speechEnabled)      { engine.inputDigit(2) }
+                CalculatorButton(type: .digit("3"), speechEnabled: speechEnabled)      { engine.inputDigit(3) }
+                CalculatorButton(type: .`operator`("+"), speechEnabled: speechEnabled) { engine.inputOperation(.add) }
             }
             
             HStack(spacing: spacing) {
-                CalculatorButton(type: .digit("0"), widthMultiplier: 2) { engine.inputDigit(0) }
-                CalculatorButton(type: .digit(".")) { engine.inputDecimal() }
-                CalculatorButton(type: .`operator`("=")) { engine.inputEquals() }
+                CalculatorButton(type: .digit("0"), widthMultiplier: 2, speechEnabled: speechEnabled) { engine.inputDigit(0) }
+                CalculatorButton(type: .digit("."), speechEnabled: speechEnabled) { engine.inputDecimal() }
+                CalculatorButton(type: .`operator`("="), speechEnabled: speechEnabled) { engine.inputEquals() }
             }
         }
         .padding(.horizontal, 12)
