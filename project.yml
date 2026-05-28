@@ -15,9 +15,8 @@ targets:
       - Calculator
     settings:
       base:
-        INFOPLIST_FILE: ""
+        INFOPLIST_FILE: Calculator/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: com.example.calculator
-        GENERATE_INFOPLIST_FILE: true
         SUPPORTED_PLATFORMS: iphonesimulator iphoneos
         DEVELOPMENT_TEAM: ""
         CODE_SIGN_STYLE: Manual
