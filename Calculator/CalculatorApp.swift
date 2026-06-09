@@ -10,7 +10,7 @@ struct CalculatorApp: App {
                 .onAppear {
                     UIApplication.shared.isIdleTimerDisabled = screenAlwaysOn
                 }
-                .onChange(of: screenAlwaysOn) { _, newValue in
+                .onChange(of: screenAlwaysOn) { newValue in
                     UIApplication.shared.isIdleTimerDisabled = newValue
                 }
         }
