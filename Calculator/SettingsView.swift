@@ -6,6 +6,7 @@ struct SettingsView: View {
     @AppStorage("decimalPlaces") private var decimalPlaces = 8
     @AppStorage("buttonSize") private var buttonSize = 1.0
     @AppStorage("hapticEnabled") private var hapticEnabled = true
+    @AppStorage("screenAlwaysOn") private var screenAlwaysOn = false
     @Environment(\.dismiss) private var dismiss
     
     private let voices = AVSpeechSynthesisVoice.speechVoices()
@@ -24,6 +25,7 @@ struct SettingsView: View {
                 decimalSection
                 buttonSizeSection
                 hapticSection
+                screenSection
             }
             .navigationTitle("\u{8bbe}\u{7f6e}")
             .navigationBarTitleDisplayMode(.inline)
@@ -119,6 +121,21 @@ struct SettingsView: View {
         .listRowBackground(rowBg)
     }
     
+    // MARK: - Screen
+
+    private var screenSection: some View {
+        Section {
+            Toggle(isOn: $screenAlwaysOn) {
+                Text("屏幕常亮")
+                    .foregroundColor(.white)
+            }
+            .tint(accentColor)
+        } header: {
+            Text("屏幕").foregroundColor(accentColor)
+        }
+        .listRowBackground(rowBg)
+    }
+
     // MARK: - Helpers
     
     private func qualityLabel(_ q: AVSpeechSynthesisVoiceQuality) -> String {
